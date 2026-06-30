@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;500;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-tc-web@1.522.0/style.css" />
 <style>
   html, body { margin: 0; padding: 0; background: #F0EAD6; font-family: 'Noto Serif TC', serif; -webkit-font-smoothing: antialiased; }
   button { font-family: inherit; }
@@ -742,7 +743,7 @@ window.StartScreen = function (props) {
   var dir = window.CL.A;
   var F = window.CL.FONTS;
 
-  var [selected, setSelected] = React.useState(9);  // 預設 9 歲 — 目前只有 9/12 歲有題庫，預設落在有內容的年齡
+  var [selected, setSelected] = React.useState(9);  // 預設先選 9 歲；6-18 任一都有題庫，使用者可改選
 
   var groups = [
     { label: '幼兒',         ages: [6, 7, 8] },
@@ -866,8 +867,8 @@ window.MainScreen = function (props) {
     (props.cards.length === 0
       ? R('div', { style: { maxWidth: 560, margin: '64px auto', textAlign: 'center', fontFamily: F.ming, color: dir.paperInkSoft, lineHeight: 1.9 } },
           R('div', { style: { fontSize: 32, color: dir.gold, marginBottom: 16 } }, '✦'),
-          R('div', { style: { fontSize: 15, color: dir.paperInk } }, props.age + ' 歲的題目還在準備中。'),
-          R('div', { style: { fontSize: 13, marginTop: 6 } }, '先點右上角換成 9 歲或 12 歲試試。')
+          R('div', { style: { fontSize: 15, color: dir.paperInk } }, props.age + ' 歲暫時抽不到題目。'),
+          R('div', { style: { fontSize: 13, marginTop: 6 } }, '點右上角換一個年齡試試。')
         )
       : R(React.Fragment, null,
           R('div', { style: { display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: 20, justifyContent: 'center', alignItems: 'center', maxWidth: 920, margin: '0 auto', flexWrap: 'wrap' } },
