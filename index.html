@@ -793,25 +793,24 @@ window.CardFlip = function (props) {
     back  = R(window.ParentCardFront, { card: window._toV6(props.card) });
   }
 
-  return R('div', { style: { width: 400, height: 564, perspective: '1500px', position: 'relative' } },
-    R('div', {
-      style: {
-        width: '100%', height: '100%',
-        transition: 'transform 0.6s',
-        transformStyle: 'preserve-3d',
-        transform: flipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
-        position: 'relative',
+  // 翻面按鈕移到卡片「下方」（不再 absolute 疊在卡面右下角，避免蓋住類別標籤／觀察小記）。
+  // width:400 必填——外層 scale wrapper 是 280px，若不固定 400 寬，alignItems:center 會把 400 寬的卡片置中而向左溢出被裁切。
+  return R('div', { style: { width: 400, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 } },
+    R('div', { style: { width: 400, height: 564, perspective: '1500px', position: 'relative' } },
+      R('div', {
+        style: {
+          width: '100%', height: '100%',
+          transition: 'transform 0.6s',
+          transformStyle: 'preserve-3d',
+          transform: flipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
+          position: 'relative',
+        },
       },
-    },
-      R('div', { style: { position: 'absolute', inset: 0, backfaceVisibility: 'hidden' } },
-        front,
-        R('button', { onClick: function () { setFlipped(true); }, style: { position: 'absolute', bottom: 18, right: 18, padding: '6px 14px', fontSize: 11, color: dir.gold, border: '1px solid ' + dir.gold, background: dir.paper, borderRadius: 999, cursor: 'pointer' } }, '家長指引')
-      ),
-      R('div', { style: { position: 'absolute', inset: 0, backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' } },
-        back,
-        R('button', { onClick: function () { setFlipped(false); }, style: { position: 'absolute', bottom: 18, right: 18, padding: '6px 14px', fontSize: 11, color: dir.gold, border: '1px solid ' + dir.gold, background: dir.paper, borderRadius: 999, cursor: 'pointer' } }, '題目')
+        R('div', { style: { position: 'absolute', inset: 0, backfaceVisibility: 'hidden' } }, front),
+        R('div', { style: { position: 'absolute', inset: 0, backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' } }, back)
       )
-    )
+    ),
+    R('button', { onClick: function () { setFlipped(!flipped); }, style: { padding: '9px 24px', fontSize: 15, fontFamily: window.CL.FONTS.ming, letterSpacing: '0.12em', color: dir.gold, border: '1px solid ' + dir.gold, background: dir.paper, borderRadius: 999, cursor: 'pointer' } }, flipped ? '題目' : '家長指引')
   );
 };
 </script>
@@ -856,7 +855,9 @@ window.MainScreen = function (props) {
           R('div', { style: { display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: 20, justifyContent: 'center', alignItems: 'center', maxWidth: 920, margin: '0 auto', flexWrap: 'wrap' } },
             props.cards.map(function (c, i) {
               var scale = isMobile ? 0.7 : 0.7;
-              return R('div', { key: c.id + '-' + i, style: { width: 400 * scale, height: 564 * scale, overflow: 'hidden' } },
+              // CardFlip 現在是「卡片 564 + gap 16 + 翻面按鈕 ~44」的直向堆疊，故 wrapper 高度要含按鈕列。
+              var flipH = 564 + 16 + 44;
+              return R('div', { key: c.id + '-' + i, style: { width: 400 * scale, height: flipH * scale, overflow: 'hidden' } },
                 R('div', { style: { transform: 'scale(' + scale + ')', transformOrigin: 'top left' } },
                   R(window.CardFlip, { card: c })
                 )
